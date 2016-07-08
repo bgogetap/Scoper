@@ -4,26 +4,21 @@ import android.app.Application
 import android.content.Context
 import com.brandongogetap.scoper.Scoper
 import com.brandongogetap.scoper.ScoperCache
-import com.brandongogetap.scoper.ScoperContext
 
 class MyApplication : Application() {
+
+    companion object {
+        const val SCOPE_TAG = "application_scope"
+    }
 
     private lateinit var scoperCache: ScoperCache
 
     override fun onCreate() {
         super.onCreate()
         scoperCache = ScoperCache()
-        Scoper.createComponent<ApplicationComponent>(this, DaggerApplicationComponent.builder()
+        Scoper.cacheComponent(this, SCOPE_TAG, DaggerApplicationComponent.builder()
                 .applicationModule(ApplicationModule(this))
                 .build())
-    }
-
-    /**
-     * Overriding this method allows you to retrieve the [ApplicationComponent] using
-     * [getApplicationContext]
-     */
-    override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(ScoperContext(base, "application_scope"))
     }
 
     /**

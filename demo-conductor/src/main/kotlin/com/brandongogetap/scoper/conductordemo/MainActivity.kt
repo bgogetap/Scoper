@@ -9,6 +9,7 @@ import com.bluelinelabs.conductor.Router
 import com.brandongogetap.scoper.Scoper
 import com.brandongogetap.scoper.conductordemo.base.ApplicationComponent
 import com.brandongogetap.scoper.conductordemo.base.BaseActivity
+import com.brandongogetap.scoper.conductordemo.base.MyApplication
 import com.brandongogetap.scoper.conductordemo.home.HomeController
 
 class MainActivity : BaseActivity() {
@@ -33,7 +34,7 @@ class MainActivity : BaseActivity() {
 
     private fun initComponent(): MainComponent {
         component = Scoper.createComponent(this,
-                Scoper.getComponent<ApplicationComponent>(applicationContext)
+                Scoper.getComponentForTag<ApplicationComponent>(MyApplication.SCOPE_TAG, this)
                         .plus(MainModule()))
         return component
     }
