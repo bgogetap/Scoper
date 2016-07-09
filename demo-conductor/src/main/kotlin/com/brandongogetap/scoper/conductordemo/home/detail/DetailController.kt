@@ -10,17 +10,14 @@ import com.brandongogetap.scoper.conductordemo.base.BaseController
 import com.brandongogetap.scoper.conductordemo.home.HomeComponent
 import getParentScopeContext
 
-class DetailController : BaseController() {
-
-    private lateinit var component: DetailComponent
+class DetailController : BaseController<DetailComponent>() {
 
     override fun onViewBound(view: View) {
-
+        component?.inject(this)
     }
 
-    override fun initComponent(activity: Activity): Any {
-        component = Scoper.getComponent<HomeComponent>(getParentScopeContext()).plus(DetailModule())
-        return component
+    override fun initComponent(activity: Activity): DetailComponent {
+        return Scoper.getComponent<HomeComponent>(getParentScopeContext()).plus(DetailModule())
     }
 
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup): View {

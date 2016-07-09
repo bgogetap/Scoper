@@ -12,18 +12,17 @@ import com.brandongogetap.scoper.conductordemo.base.BaseActivity
 import com.brandongogetap.scoper.conductordemo.base.MyApplication
 import com.brandongogetap.scoper.conductordemo.home.HomeController
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity<MainComponent>() {
 
     @BindView(R.id.container) lateinit var container: ViewGroup
 
     private lateinit var router: Router
-    private lateinit var component: MainComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         ButterKnife.bind(this)
-        initComponent().inject(this)
+        component?.inject(this)
 
         router = Conductor.attachRouter(this, container, savedInstanceState)
         if (!router.hasRootController()) {
@@ -32,11 +31,9 @@ class MainActivity : BaseActivity() {
         router.addChangeListener(this)
     }
 
-    private fun initComponent(): MainComponent {
-        component = Scoper.createComponent(this,
-                Scoper.getComponentForTag<ApplicationComponent>(MyApplication.SCOPE_TAG, this)
-                        .plus(MainModule()))
-        return component
+    override fun initComponent(): MainComponent {
+        return Scoper.getComponentForTag<ApplicationComponent>(MyApplication.SCOPE_TAG, this)
+                .plus(MainModule())
     }
 
     override fun onBackPressed() {

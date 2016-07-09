@@ -13,12 +13,10 @@ import com.brandongogetap.scoper.conductordemo.R
 import com.brandongogetap.scoper.conductordemo.base.BaseController
 import com.brandongogetap.scoper.conductordemo.home.detail.DetailController
 
-class HomeController : BaseController() {
-
-    lateinit var component: HomeComponent
+class HomeController : BaseController<HomeComponent>() {
 
     override fun onViewBound(view: View) {
-        component.inject(this)
+        component?.inject(this)
     }
 
     @OnClick(R.id.btn_details) fun detailClicked() {
@@ -34,9 +32,8 @@ class HomeController : BaseController() {
                 .build())
     }
 
-    override fun initComponent(activity: Activity): Any {
-        component = Scoper.getComponent<MainComponent>(activity).plus(HomeModule())
-        return component
+    override fun initComponent(activity: Activity): HomeComponent {
+        return Scoper.getComponent<MainComponent>(activity).plus(HomeModule())
     }
 
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup): View {

@@ -11,9 +11,9 @@ import com.brandongogetap.scoper.Scoped
 import com.brandongogetap.scoper.Scoper
 import com.brandongogetap.scoper.ScoperContext
 
-abstract class BaseController : Controller(), Scoped {
+abstract class BaseController<T> : Controller(), Scoped<T> {
 
-    private var componentCreated = false
+    protected var component: T? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
         val view = inflateView(inflater, container)
@@ -24,9 +24,8 @@ abstract class BaseController : Controller(), Scoped {
     }
 
     private fun createComponent() {
-        if (componentCreated.not()) {
-            Scoper.createComponent<Any>(getScopedContext(), initComponent(activity))
-            componentCreated = true
+        if (component == null) {
+            component = Scoper.createComponent<T>(getScopedContext(), initComponent(activity))
         }
     }
 
@@ -34,7 +33,7 @@ abstract class BaseController : Controller(), Scoped {
 
     override fun getScopeName(): String = javaClass.name
 
-    protected abstract fun initComponent(activity: Activity): Any
+    protected abstract fun initComponent(activity: Activity): T
 
     protected abstract fun inflateView(inflater: LayoutInflater, container: ViewGroup): View
 

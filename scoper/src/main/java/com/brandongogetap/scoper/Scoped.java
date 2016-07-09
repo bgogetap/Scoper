@@ -2,7 +2,7 @@ package com.brandongogetap.scoper;
 
 import android.support.annotation.NonNull;
 
-public interface Scoped {
+public interface Scoped<T> {
 
     @NonNull String getScopeName();
 }
