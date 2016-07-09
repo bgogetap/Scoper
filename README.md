@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/bgogetap/Scoper.svg?branch=master)](https://travis-ci.org/bgogetap/Scoper)
+[![Build Status](https://travis-ci.org/bgogetap/Scoper.svg?branch=master)](https://travis-ci.org/bgogetap/Scoper) [ ![Download](https://api.bintray.com/packages/bgogetap/android/Scoper/images/download.svg) ](https://bintray.com/bgogetap/android/Scoper/_latestVersion)
 
 # Scoper - Lightweight Dagger 2 Component Management
 
@@ -90,5 +90,19 @@ How you do the next level of scopes will vary depending on your choice of UI man
 This is just one potential way to set up the boilerplate for scoping your components. `Scoper` has methods like `cacheComponent` and `getComponentForTag` that allow you to manually manage your components without having to implement the `Scoped` interface or use `ScoperContext`.
 
 As mentioned before, the only step you are required to take is instantiating `ScoperCache` in your `Application` subclass, and returning it as shown above in `getSystemService`.
+
+Add to your Gradle dependencies:
+
+```groovy
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+
+dependencies {
+    compile 'com.brandongogetap:scoper:0.1'
+}
+```
 
 ### Coming soon - Other demos
