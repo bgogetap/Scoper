@@ -1,1 +1,1 @@
-include ':scoper', ':demo-conductor'
+include ':scoper', ':demo-conductor', ':demo-fragment'

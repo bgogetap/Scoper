@@ -13,5 +13,5 @@ fun Router.pushNormal(controller: Controller) {
 }
 
 fun Controller.getParentScopeContext(): Context {
-    return (this.targetController as BaseController).getScopedContext()
+    return (this.targetController as BaseController<*>).getScopedContext()
 }
