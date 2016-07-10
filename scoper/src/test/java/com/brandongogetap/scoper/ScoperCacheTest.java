@@ -87,4 +87,14 @@ public class ScoperCacheTest {
                 .destroyComponent("second")
                 .checkCacheCountEquals(0);
     }
+
+    @Test
+    public void contextCheckedForInstanceOfScoperContext() {
+        try {
+            robot.getWithoutScoperContextInstance();
+            fail();
+        } catch (IllegalArgumentException e) {
+            assertEquals("Context is not instance of ScoperContext", e.getMessage());
+        }
+    }
 }

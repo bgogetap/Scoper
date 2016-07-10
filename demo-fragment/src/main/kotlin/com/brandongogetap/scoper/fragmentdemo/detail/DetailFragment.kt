@@ -49,6 +49,6 @@ class DetailFragment : BaseFragment<DetailComponent>() {
     }
 
     override fun initComponent(): DetailComponent {
-        return Scoper.getComponentForTag<HomeComponent>(parentScopeName, context).plus(DetailModule())
+        return Scoper.getComponentForName<HomeComponent>(parentScopeName).plus(DetailModule())
     }
 }

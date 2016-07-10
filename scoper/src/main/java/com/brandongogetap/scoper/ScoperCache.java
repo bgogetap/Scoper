@@ -3,6 +3,7 @@ package com.brandongogetap.scoper;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
+import android.util.Log;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -30,13 +31,11 @@ import static com.brandongogetap.scoper.Preconditions.checkNotNull;
  *     }
  * </pre>
  */
-public final class ScoperCache {
-
-    public static final String SERVICE_NAME = ScoperCache.class.getName();
+final class ScoperCache {
 
     private Map<String, Object> componentMap;
 
-    public ScoperCache() {
+    ScoperCache() {
         componentMap = new LinkedHashMap<>();
     }
 
@@ -59,28 +58,33 @@ public final class ScoperCache {
     }
 
     @SuppressWarnings("WrongConstant") private void put(Context context, Object component) {
-        componentMap.put(
-                getScoperContext(context).getTag(), checkNotNull(component, "component == null"));
+        put(getScoperContext(context).getTag(), component);
     }
 
     void put(String tag, Object component) {
-        componentMap.put(tag, component);
+        if (componentMap.containsKey(tag)) {
+            Log.w("Scoper", "CacheComponent: Component already exists for given scope: " + tag +
+                    ". It will be replaced with the new component.");
+        }
+        componentMap.put(tag, checkNotNull(component, "component == null"));
     }
 
     void destroyScope(Context context) {
-        componentMap.remove(getScoperContext(context).getTag());
+        destroyScope(getScoperContext(context).getTag());
+    }
+
+    void destroyScope(String tag) {
+        if (!componentMap.containsKey(tag)) {
+            Log.d("Scoper", "DestroyComponent: No component to destroy for given scope: " + tag + ".");
+        }
+        componentMap.remove(tag);
     }
 
     private static ScoperContext getScoperContext(Context context) {
-        //noinspection WrongConstant
-        return (ScoperContext) context.getSystemService(ScoperContext.SERVICE_NAME);
-    }
-
-    @SuppressWarnings("WrongConstant") static ScoperCache get(Context context) {
-        return checkNotNull(
-                (ScoperCache) context.getApplicationContext().getSystemService(SERVICE_NAME),
-                "ScoperCache == null\nIt is either not instantiated, " +
-                        "or is not being returned in Application#getSystemService");
+        if (!(context instanceof ScoperContext)) {
+            throw new IllegalArgumentException("Context is not instance of ScoperContext");
+        }
+        return (ScoperContext) context;
     }
 
     @VisibleForTesting
