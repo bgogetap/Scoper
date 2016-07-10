@@ -32,7 +32,7 @@ class MainActivity : BaseActivity<MainComponent>() {
     }
 
     override fun initComponent(): MainComponent {
-        return Scoper.getComponentForTag<ApplicationComponent>(MyApplication.SCOPE_TAG, this)
+        return Scoper.getComponentForName<ApplicationComponent>(MyApplication.SCOPE_TAG)
                 .plus(MainModule())
     }
 

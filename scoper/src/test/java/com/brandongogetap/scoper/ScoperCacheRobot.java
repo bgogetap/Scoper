@@ -45,6 +45,11 @@ final class ScoperCacheRobot {
         return this;
     }
 
+    ScoperCacheRobot getWithoutScoperContextInstance() {
+        cache.getComponent(Mockito.mock(Context.class));
+        return this;
+    }
+
     private ScoperContext getScoperContextForTag(String tag) {
         return new ScoperContext(Mockito.mock(Context.class), tag);
     }

@@ -6,8 +6,6 @@ import android.view.LayoutInflater;
 
 public final class ScoperContext extends ContextWrapper {
 
-    static final String SERVICE_NAME = "scoped_context_wrapper";
-
     private String tag;
 
     private LayoutInflater layoutInflater;
@@ -27,9 +25,6 @@ public final class ScoperContext extends ContextWrapper {
     }
 
     @Override public Object getSystemService(String name) {
-        if (name.equals(SERVICE_NAME)) {
-            return this;
-        }
         if (LAYOUT_INFLATER_SERVICE.equals(name)) {
             if (layoutInflater == null) {
                 layoutInflater = LayoutInflater.from(getBaseContext()).cloneInContext(this);
