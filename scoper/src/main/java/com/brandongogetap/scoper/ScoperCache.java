@@ -81,10 +81,14 @@ final class ScoperCache {
     }
 
     private static ScoperContext getScoperContext(Context context) {
-        if (!(context instanceof ScoperContext)) {
-            throw new IllegalArgumentException("Context is not instance of ScoperContext");
+        //noinspection WrongConstant
+        Object scoperContext = context.getSystemService(ScoperContext.SERVICE_NAME);
+        if (scoperContext instanceof ScoperContext) {
+            return (ScoperContext) scoperContext;
+        } else {
+            throw new IllegalArgumentException("Context does not have ScoperContext linked: " +
+                    context.getClass().getName());
         }
-        return (ScoperContext) context;
     }
 
     @VisibleForTesting

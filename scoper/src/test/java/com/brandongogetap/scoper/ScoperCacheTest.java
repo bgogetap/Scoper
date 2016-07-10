@@ -1,7 +1,10 @@
 package com.brandongogetap.scoper;
 
+import android.content.Context;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
@@ -90,11 +93,14 @@ public class ScoperCacheTest {
 
     @Test
     public void contextCheckedForInstanceOfScoperContext() {
+        Context context = Mockito.mock(Context.class);
         try {
-            robot.getWithoutScoperContextInstance();
+            robot.getWithContext(context);
             fail();
         } catch (IllegalArgumentException e) {
-            assertEquals("Context is not instance of ScoperContext", e.getMessage());
+            assertEquals(
+                    "Context does not have ScoperContext linked: " + context.getClass().getName(),
+                    e.getMessage());
         }
     }
 }

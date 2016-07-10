@@ -13,7 +13,7 @@ import android.support.annotation.NonNull;
      * Adds a component to the map associated with the given Context, or returns the existing cached
      * component for the given scope.
      * <p>
-     * Throws {@link IllegalArgumentException} if Context is not an instance of {@link ScoperContext}
+     * Throws {@link IllegalArgumentException} if Context is not linked to {@link ScoperContext}
      *
      * @param context   Context associated with the scope (Must be {@link ScoperContext}
      * @param component Component for given scope
@@ -33,7 +33,7 @@ import android.support.annotation.NonNull;
      * This is usually used to retrieve another scope's component to use in building a subcomponent
      * for the current scope.
      *
-     * Throws {@link IllegalArgumentException} if Context is not an instance of {@link ScoperContext}
+     * Throws {@link IllegalArgumentException} if Context is not linked to {@link ScoperContext}
      *
      * @param context Context associated with the scope
      * @param <T>     The component type
@@ -78,7 +78,7 @@ import android.support.annotation.NonNull;
     /**
      * Removes the component for the given Context's scope
      *
-     * Throws {@link IllegalArgumentException} if Context is not an instance of {@link ScoperContext}
+     * Throws {@link IllegalArgumentException} if Context is not linked to {@link ScoperContext}
      *
      * @param context The context associated with the scope that should be destroyed
      */
