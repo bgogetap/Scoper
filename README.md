@@ -87,7 +87,7 @@ buildscript {
 }
 
 dependencies {
-    compile 'com.brandongogetap:scoper:0.2'
+    compile 'com.brandongogetap:scoper:0.3'
 }
 ```
 
