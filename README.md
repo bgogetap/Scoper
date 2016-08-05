@@ -83,7 +83,7 @@ The default behavior is to cache components across config changes. This means th
 This behavior can be overridden by calling `Scoper.replaceExisting(true)`.
 
 ### Setup
-Add to your Gradle dependencies:
+Add to your Gradle dependencies (Check badge at top for version information):
 
 ```groovy
 buildscript {
@@ -93,7 +93,7 @@ buildscript {
 }
 
 dependencies {
-    compile 'com.brandongogetap:scoper:0.3.1'
+    compile 'com.brandongogetap:scoper:x.y.z'
 }
 ```
 
