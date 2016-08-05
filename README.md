@@ -77,6 +77,12 @@ How you do the next level of scopes will vary depending on your choice of UI man
 
 This is just one potential way to set up the boilerplate for scoping your components. `Scoper` has methods like `cacheComponent(String scopeName)`, `getComponentForTag(String scopeName)`, `destroyScope(String scopeName)` that allow you to manually manage your components without having to implement the `Scoped` interface or use `ScoperContext`.
 
+### Caching Behavior
+The default behavior is to cache components across config changes. This means that each time your class calls `createComponent(context, component)`, if there is an existing component for that scope, the existing instance will be returned rather than the provided new instance.
+
+This behavior can be overridden by calling `Scoper.replaceExisting(true)`.
+
+### Setup
 Add to your Gradle dependencies:
 
 ```groovy

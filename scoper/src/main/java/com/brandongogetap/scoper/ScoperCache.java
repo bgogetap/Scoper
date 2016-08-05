@@ -34,14 +34,16 @@ import static com.brandongogetap.scoper.Preconditions.checkNotNull;
 final class ScoperCache {
 
     private Map<String, Object> componentMap;
+    private boolean replaceExisting;
 
     ScoperCache() {
         componentMap = new LinkedHashMap<>();
+        replaceExisting = false;
     }
 
     @SuppressWarnings("WrongConstant") Object initComponent(Context context, Object component) {
         ScoperContext scoperContext = getScoperContext(context);
-        if (componentMap.get(scoperContext.getTag()) != null) {
+        if (componentMap.get(scoperContext.getTag()) != null && !replaceExisting) {
             return componentMap.get(scoperContext.getTag());
         }
         put(scoperContext, component);
@@ -62,7 +64,7 @@ final class ScoperCache {
     }
 
     void put(String tag, Object component) {
-        if (componentMap.containsKey(tag)) {
+        if (componentMap.containsKey(tag) && !replaceExisting) {
             Log.w("Scoper", "CacheComponent: Component already exists for given scope: " + tag +
                     ". It will be replaced with the new component.");
         }
@@ -89,6 +91,10 @@ final class ScoperCache {
             throw new IllegalArgumentException("Context does not have ScoperContext linked: " +
                     context.getClass().getName());
         }
+    }
+
+    void replaceExisting(boolean replaceExisting) {
+        this.replaceExisting = replaceExisting;
     }
 
     @VisibleForTesting

@@ -4,10 +4,10 @@ import android.content.Context;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 public class ScoperCacheTest {
 
@@ -93,7 +93,7 @@ public class ScoperCacheTest {
 
     @Test
     public void contextCheckedForInstanceOfScoperContext() {
-        Context context = Mockito.mock(Context.class);
+        Context context = mock(Context.class);
         try {
             robot.getWithContext(context);
             fail();
@@ -102,5 +102,34 @@ public class ScoperCacheTest {
                     "Context does not have ScoperContext linked: " + context.getClass().getName(),
                     e.getMessage());
         }
+    }
+
+    @Test
+    public void scoperContextReturnsCorrectComponent() {
+        ScoperContext context = new ScoperContext(mock(Context.class), "first");
+        Object component = new Object();
+        robot.initComponent(context, component)
+                .checkComponentEquals(context, component);
+    }
+
+    @Test
+    public void componentInstanceKeptIfExisting() {
+        ScoperContext context = new ScoperContext(mock(Context.class), "first");
+        Object firstInstance = new Object();
+        Object secondInstance = new Object();
+        robot.initComponent(context, firstInstance)
+                .initComponent(context, secondInstance)
+                .checkComponentEquals(context, firstInstance);
+    }
+
+    @Test
+    public void componentInstanceReplacedIfCachingBehaviorToggled() {
+        ScoperContext context = new ScoperContext(mock(Context.class), "first");
+        Object firstInstance = new Object();
+        Object secondInstance = new Object();
+        robot.replaceExisting(true)
+                .initComponent(context, firstInstance)
+                .initComponent(context, secondInstance)
+                .checkComponentEquals(context, secondInstance);
     }
 }

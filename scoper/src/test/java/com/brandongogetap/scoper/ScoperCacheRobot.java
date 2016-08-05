@@ -19,9 +19,18 @@ final class ScoperCacheRobot {
         return this;
     }
 
+    ScoperCacheRobot initComponent(Context context, Object component) {
+        cache.initComponent(context, component);
+        return this;
+    }
+
     ScoperCacheRobot checkComponentEquals(String tag, Object component) {
-        Object cachedComponent = cache.getComponentForTag(tag);
-        assertEquals(component, cachedComponent);
+        assertEquals(component, cache.getComponentForTag(tag));
+        return this;
+    }
+
+    ScoperCacheRobot checkComponentEquals(Context context, Object component) {
+        assertEquals(component, cache.getComponent(context));
         return this;
     }
 
@@ -47,6 +56,11 @@ final class ScoperCacheRobot {
 
     ScoperCacheRobot getWithContext(Context context) {
         cache.getComponent(context);
+        return this;
+    }
+
+    ScoperCacheRobot replaceExisting(boolean replaceExisting) {
+        cache.replaceExisting(replaceExisting);
         return this;
     }
 

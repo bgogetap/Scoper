@@ -10,8 +10,25 @@ import android.support.annotation.NonNull;
     }
 
     /**
+     * Toggle the caching behavior of components.
+     * <p>
+     * The default behavior returns existing components for the same Scope when new instances of
+     * components are passed into {@link Scoper#createComponent(Context, Object)}. This allows
+     * components to survive configuration changes.
+     * <p>
+     * If you would like to overwrite existing components for a new Scope, pass 'true' to this
+     * method.
+     *
+     * @param replaceExisting Enable replacement of cached components if new instance is passed in.
+     *                        Default value is false.
+     */
+    public static void replaceExisting(boolean replaceExisting) {
+        CacheHandler.INSTANCE.replaceExisting(replaceExisting);
+    }
+
+    /**
      * Adds a component to the map associated with the given Context, or returns the existing cached
-     * component for the given scope.
+     * component for the given scope (unless disabled by {@link Scoper#replaceExisting(boolean)}).
      * <p>
      * Throws {@link IllegalArgumentException} if Context is not linked to {@link ScoperContext}
      *
@@ -32,7 +49,7 @@ import android.support.annotation.NonNull;
      * <p>
      * This is usually used to retrieve another scope's component to use in building a subcomponent
      * for the current scope.
-     *
+     * <p>
      * Throws {@link IllegalArgumentException} if Context is not linked to {@link ScoperContext}
      *
      * @param context Context associated with the scope
@@ -77,7 +94,7 @@ import android.support.annotation.NonNull;
 
     /**
      * Removes the component for the given Context's scope
-     *
+     * <p>
      * Throws {@link IllegalArgumentException} if Context is not linked to {@link ScoperContext}
      *
      * @param context The context associated with the scope that should be destroyed
@@ -123,6 +140,10 @@ import android.support.annotation.NonNull;
 
         void destroyScope(String tag) {
             cache.destroyScope(tag);
+        }
+
+        void replaceExisting(boolean replaceExisting) {
+            cache.replaceExisting(replaceExisting);
         }
     }
 }
