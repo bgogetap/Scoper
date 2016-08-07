@@ -3,7 +3,6 @@ package com.brandongogetap.scoper;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
-import android.util.Log;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -33,10 +32,13 @@ import static com.brandongogetap.scoper.Preconditions.checkNotNull;
  */
 final class ScoperCache {
 
+    private final Logger logger;
+
     private Map<String, Object> componentMap;
     private boolean replaceExisting;
 
-    ScoperCache() {
+    ScoperCache(Logger logger) {
+        this.logger = logger;
         componentMap = new LinkedHashMap<>();
         replaceExisting = false;
     }
@@ -44,9 +46,13 @@ final class ScoperCache {
     @SuppressWarnings("WrongConstant") Object initComponent(Context context, Object component) {
         ScoperContext scoperContext = getScoperContext(context);
         if (componentMap.get(scoperContext.getTag()) != null && !replaceExisting) {
+            logger.d("Existing component for scope: '" + scoperContext.getTag() + "' present. " +
+                    "Returning existing instance");
             return componentMap.get(scoperContext.getTag());
         }
         put(scoperContext, component);
+        logger.d("No existing component for scope: '" + scoperContext.getTag() + "'. " +
+                "Returning provided instance.");
         return component;
     }
 
@@ -63,12 +69,13 @@ final class ScoperCache {
         put(getScoperContext(context).getTag(), component);
     }
 
-    void put(String tag, Object component) {
+    @NonNull Object put(String tag, @NonNull Object component) {
         if (componentMap.containsKey(tag) && !replaceExisting) {
-            Log.w("Scoper", "CacheComponent: Component already exists for given scope: " + tag +
+            logger.w("CacheComponent: Component already exists for given scope: " + tag +
                     ". It will be replaced with the new component.");
         }
         componentMap.put(tag, checkNotNull(component, "component == null"));
+        return component;
     }
 
     void destroyScope(Context context) {
@@ -77,7 +84,7 @@ final class ScoperCache {
 
     void destroyScope(String tag) {
         if (!componentMap.containsKey(tag)) {
-            Log.d("Scoper", "DestroyComponent: No component to destroy for given scope: " + tag + ".");
+            logger.w("DestroyComponent: No component to destroy for given scope: " + tag + ".");
         }
         componentMap.remove(tag);
     }

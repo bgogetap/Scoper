@@ -11,7 +11,7 @@ final class ScoperCacheRobot {
     private final ScoperCache cache;
 
     ScoperCacheRobot() {
-        this.cache = new ScoperCache();
+        this.cache = new ScoperCache(new Logger());
     }
 
     ScoperCacheRobot initComponent(String tag, Object component) {
@@ -64,7 +64,13 @@ final class ScoperCacheRobot {
         return this;
     }
 
+    ScoperCacheRobot putReturnsCreated(String tag, Object component) {
+        assertEquals(cache.put(tag, component), component);
+        return this;
+    }
+
     private ScoperContext getScoperContextForTag(String tag) {
         return new ScoperContext(Mockito.mock(Context.class), tag);
     }
+
 }

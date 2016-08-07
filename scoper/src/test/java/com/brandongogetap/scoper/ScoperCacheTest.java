@@ -132,4 +132,12 @@ public class ScoperCacheTest {
                 .initComponent(context, secondInstance)
                 .checkComponentEquals(context, secondInstance);
     }
+
+    @Test
+    public void createdComponentReturned() {
+        Object firstComponent = new Object();
+        Object secondComponent = new Object();
+        robot.putReturnsCreated("first", firstComponent)
+                .putReturnsCreated("first", secondComponent);
+    }
 }

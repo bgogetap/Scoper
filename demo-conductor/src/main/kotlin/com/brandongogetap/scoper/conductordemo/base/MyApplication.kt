@@ -11,7 +11,7 @@ class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Scoper.cacheComponent(SCOPE_TAG, DaggerApplicationComponent.builder()
+        Scoper.cacheComponent<ApplicationComponent>(SCOPE_TAG, DaggerApplicationComponent.builder()
                 .applicationModule(ApplicationModule(this))
                 .build())
     }
