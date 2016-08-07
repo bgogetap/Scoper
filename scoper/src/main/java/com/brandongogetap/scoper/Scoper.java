@@ -87,9 +87,11 @@ import android.support.annotation.NonNull;
      *
      * @param scopeName Scope name associated with the component
      * @param component Component to cache
+     * @return The provided component
      */
-    public static void cacheComponent(String scopeName, Object component) {
-        CacheHandler.INSTANCE.cacheComponent(scopeName, component);
+    @NonNull
+    public static <T> T cacheComponent(String scopeName, @NonNull Object component) {
+        return CacheHandler.INSTANCE.cacheComponent(scopeName, component);
     }
 
     /**
@@ -112,11 +114,20 @@ import android.support.annotation.NonNull;
         CacheHandler.INSTANCE.destroyScope(scopeName);
     }
 
+    /**
+     * Toggle debug console logging.
+     * @param enabled Whether or not to log debug messages. Default is off (false).
+     */
+    public static void loggingEnabled(boolean enabled) {
+        CacheHandler.INSTANCE.loggingEnabled(enabled);
+    }
+
     @SuppressWarnings("unchecked")
     private enum CacheHandler {
         INSTANCE;
 
-        private ScoperCache cache = new ScoperCache();
+        private Logger logger = new Logger();
+        private ScoperCache cache = new ScoperCache(logger);
 
         <T> T createComponent(Context context, Object component) {
             return (T) cache.initComponent(context, component);
@@ -130,8 +141,8 @@ import android.support.annotation.NonNull;
             return (T) cache.getComponentForTag(tag);
         }
 
-        void cacheComponent(String tag, Object component) {
-            cache.put(tag, component);
+        <T> T cacheComponent(String tag, Object component) {
+            return (T) cache.put(tag, component);
         }
 
         void destroyScope(Context context) {
@@ -144,6 +155,10 @@ import android.support.annotation.NonNull;
 
         void replaceExisting(boolean replaceExisting) {
             cache.replaceExisting(replaceExisting);
+        }
+
+        void loggingEnabled(boolean enabled) {
+            logger.setEnabled(enabled);
         }
     }
 }
