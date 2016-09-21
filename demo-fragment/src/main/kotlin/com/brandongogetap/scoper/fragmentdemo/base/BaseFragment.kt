@@ -19,7 +19,7 @@ abstract class BaseFragment<T> : Fragment(), Scoped<T> {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (component == null) {
-            component = Scoper.createComponent<T>(context, initComponent())
+            component = Scoper.createComponent<T>(this, initComponent())
         }
         unbinder = ButterKnife.bind(this, view!!)
     }

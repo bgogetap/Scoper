@@ -25,7 +25,7 @@ abstract class BaseController<T> : Controller(), Scoped<T> {
 
     private fun createComponent() {
         if (component == null) {
-            component = Scoper.createComponent<T>(getScopedContext(), initComponent(activity))
+            component = Scoper.createComponent<T>(this, initComponent(activity))
         }
     }
 

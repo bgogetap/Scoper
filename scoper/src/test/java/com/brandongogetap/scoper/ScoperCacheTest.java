@@ -108,7 +108,7 @@ public class ScoperCacheTest {
     public void scoperContextReturnsCorrectComponent() {
         ScoperContext context = new ScoperContext(mock(Context.class), "first");
         Object component = new Object();
-        robot.initComponent(context, component)
+        robot.initComponent(context.getTag(), component)
                 .checkComponentEquals(context, component);
     }
 
@@ -117,8 +117,8 @@ public class ScoperCacheTest {
         ScoperContext context = new ScoperContext(mock(Context.class), "first");
         Object firstInstance = new Object();
         Object secondInstance = new Object();
-        robot.initComponent(context, firstInstance)
-                .initComponent(context, secondInstance)
+        robot.initComponent(context.getTag(), firstInstance)
+                .initComponent(context.getTag(), secondInstance)
                 .checkComponentEquals(context, firstInstance);
     }
 
@@ -128,8 +128,8 @@ public class ScoperCacheTest {
         Object firstInstance = new Object();
         Object secondInstance = new Object();
         robot.replaceExisting(true)
-                .initComponent(context, firstInstance)
-                .initComponent(context, secondInstance)
+                .initComponent(context.getTag(), firstInstance)
+                .initComponent(context.getTag(), secondInstance)
                 .checkComponentEquals(context, secondInstance);
     }
 
@@ -139,5 +139,12 @@ public class ScoperCacheTest {
         Object secondComponent = new Object();
         robot.putReturnsCreated("first", firstComponent)
                 .putReturnsCreated("first", secondComponent);
+    }
+
+    @Test
+    public void initComponentWithTag() {
+        Object firstComponent = new Object();
+        robot.initComponent("first", firstComponent)
+                .checkComponentEquals("first", firstComponent);
     }
 }

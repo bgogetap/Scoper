@@ -43,15 +43,14 @@ final class ScoperCache {
         replaceExisting = false;
     }
 
-    @SuppressWarnings("WrongConstant") Object initComponent(Context context, Object component) {
-        ScoperContext scoperContext = getScoperContext(context);
-        if (componentMap.get(scoperContext.getTag()) != null && !replaceExisting) {
-            logger.d("Existing component for scope: '" + scoperContext.getTag() + "' present. " +
+    Object initComponent(String scopeName, Object component) {
+        if (componentMap.get(scopeName) != null && !replaceExisting) {
+            logger.d("Existing component for scope: '" + scopeName + "' present. " +
                     "Returning existing instance");
-            return componentMap.get(scoperContext.getTag());
+            return componentMap.get(scopeName);
         }
-        put(scoperContext, component);
-        logger.d("No existing component for scope: '" + scoperContext.getTag() + "'. " +
+        put(scopeName, component);
+        logger.d("No existing component for scope: '" + scopeName + "'. " +
                 "Returning provided instance.");
         return component;
     }
@@ -63,10 +62,6 @@ final class ScoperCache {
 
     @NonNull Object getComponentForTag(String tag) {
         return checkNotNull(componentMap.get(tag), "No Component for: " + tag);
-    }
-
-    @SuppressWarnings("WrongConstant") private void put(Context context, Object component) {
-        put(getScoperContext(context).getTag(), component);
     }
 
     @NonNull Object put(String tag, @NonNull Object component) {

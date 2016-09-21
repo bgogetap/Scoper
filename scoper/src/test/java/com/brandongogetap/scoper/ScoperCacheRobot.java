@@ -15,12 +15,7 @@ final class ScoperCacheRobot {
     }
 
     ScoperCacheRobot initComponent(String tag, Object component) {
-        cache.initComponent(getScoperContextForTag(tag), component);
-        return this;
-    }
-
-    ScoperCacheRobot initComponent(Context context, Object component) {
-        cache.initComponent(context, component);
+        cache.initComponent(tag, component);
         return this;
     }
 

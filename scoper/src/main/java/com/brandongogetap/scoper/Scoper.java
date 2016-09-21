@@ -13,10 +13,10 @@ import android.support.annotation.NonNull;
      * Toggle the caching behavior of components.
      * <p>
      * The default behavior returns existing components for the same Scope when new instances of
-     * components are passed into {@link Scoper#createComponent(Context, Object)}. This allows
+     * components are passed into {@link Scoper#createComponent(Scoped, Object)}. This allows
      * components to survive configuration changes.
      * <p>
-     * If you would like to overwrite existing components for a new Scope, pass 'true' to this
+     * If you would like to overwrite existing components for a your scopes, pass 'true' to this
      * method.
      *
      * @param replaceExisting Enable replacement of cached components if new instance is passed in.
@@ -27,20 +27,17 @@ import android.support.annotation.NonNull;
     }
 
     /**
-     * Adds a component to the map associated with the given Context, or returns the existing cached
-     * component for the given scope (unless disabled by {@link Scoper#replaceExisting(boolean)}).
-     * <p>
-     * Throws {@link IllegalArgumentException} if Context is not linked to {@link ScoperContext}
+     * Adds a component to the map associated with the given {@link Scoped} object, or returns the
+     * existing cached component for the given {@link Scoped} object (unless disabled by
+     * {@link Scoper#replaceExisting(boolean)}.
      *
-     * @param context   Context associated with the scope (Must be {@link ScoperContext}
-     * @param component Component for given scope
+     * @param scoped    The {@link Scoped} object to which the component should be linked
+     * @param component Component of the given scope
      * @param <T>       The component type
-     * @return The passed in component, or the cached component for given scope, if one exists
+     * @return The provided component
      */
-    @SuppressWarnings("unchecked")
-    @NonNull
-    public static <T> T createComponent(Context context, Object component) {
-        return CacheHandler.INSTANCE.createComponent(context, component);
+    public static <T> T createComponent(Scoped<?> scoped, Object component) {
+        return CacheHandler.INSTANCE.createComponent(scoped, component);
     }
 
     /**
@@ -106,6 +103,15 @@ import android.support.annotation.NonNull;
     }
 
     /**
+     * Removes the component for the given {@link Scoped} object
+     *
+     * @param scoped The {@link Scoped} object associated with the scope to be destroyed
+     */
+    public static void destroyScope(Scoped<?> scoped) {
+        CacheHandler.INSTANCE.destroyScope(scoped.getScopeName());
+    }
+
+    /**
      * Removes the component for the given Scope tag
      *
      * @param scopeName The scope to be destroyed
@@ -116,6 +122,7 @@ import android.support.annotation.NonNull;
 
     /**
      * Toggle debug console logging.
+     *
      * @param enabled Whether or not to log debug messages. Default is off (false).
      */
     public static void loggingEnabled(boolean enabled) {
@@ -129,8 +136,8 @@ import android.support.annotation.NonNull;
         private Logger logger = new Logger();
         private ScoperCache cache = new ScoperCache(logger);
 
-        <T> T createComponent(Context context, Object component) {
-            return (T) cache.initComponent(context, component);
+        <T> T createComponent(Scoped<?> scoped, Object component) {
+            return (T) cache.initComponent(scoped.getScopeName(), component);
         }
 
         <T> T getComponent(Context context) {
