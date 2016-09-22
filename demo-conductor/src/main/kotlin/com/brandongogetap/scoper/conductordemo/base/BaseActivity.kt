@@ -30,7 +30,7 @@ abstract class BaseActivity<T> : AppCompatActivity(), Scoped<T>, ControllerChang
     }
 
     override fun onChangeCompleted(to: Controller?, from: Controller?, isPush: Boolean, container: ViewGroup?, handler: ControllerChangeHandler?) {
-        if (isPush.not()) Scoper.destroyScope((from as BaseController<*>).getScopedContext())
+        if (isPush.not()) Scoper.destroyScope((from as BaseController<*>))
     }
 
     abstract fun initComponent(): T

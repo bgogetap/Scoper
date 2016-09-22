@@ -92,17 +92,6 @@ import android.support.annotation.NonNull;
     }
 
     /**
-     * Removes the component for the given Context's scope
-     * <p>
-     * Throws {@link IllegalArgumentException} if Context is not linked to {@link ScoperContext}
-     *
-     * @param context The context associated with the scope that should be destroyed
-     */
-    public static void destroyScope(Context context) {
-        CacheHandler.INSTANCE.destroyScope(context);
-    }
-
-    /**
      * Removes the component for the given {@link Scoped} object
      *
      * @param scoped The {@link Scoped} object associated with the scope to be destroyed

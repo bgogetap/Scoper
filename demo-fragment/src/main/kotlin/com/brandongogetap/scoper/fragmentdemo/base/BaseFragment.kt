@@ -41,7 +41,7 @@ abstract class BaseFragment<T> : Fragment(), Scoped<T> {
         super.onDestroy()
         //TODO: Better way to determine that Fragment is being permanently destroyed?
         if (!activity.isChangingConfigurations) {
-            Scoper.destroyScope(context)
+            Scoper.destroyScope(this)
         }
     }
 }
