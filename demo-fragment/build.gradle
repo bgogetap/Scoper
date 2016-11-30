@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "com.brandongogetap.scoper.fragmentdemo"
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -34,7 +34,7 @@ kapt {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':scoper')
-    compile 'com.android.support:appcompat-v7:24.1.1'
+    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
 
     compile "com.jakewharton:butterknife:$butterknifeVersion"
     kapt "com.jakewharton:butterknife-compiler:$butterknifeVersion"
