@@ -32,9 +32,10 @@ ext {
     rxAndroidVersion = '1.2.1'
     buildToolsVersion = '25.0.1'
     supportLibraryVersion = '25.0.1'
-    targetSdkVersion = 25
-    compileSdkVersion = 25
+    targetSdkVersion = 24
+    compileSdkVersion = 24
     kotlinVersion = '1.0.3'
     butterknifeVersion = '8.1.0'
     mockitoVersion = '1.10.19'
+    lintVersion = '25.2.0'
 }

@@ -19,6 +19,11 @@ final class ScoperCacheRobot {
         return this;
     }
 
+    ScoperCacheRobot initChild(String tag, String child, Object component) {
+        cache.initComponent(tag, child, component);
+        return this;
+    }
+
     ScoperCacheRobot checkComponentEquals(String tag, Object component) {
         assertEquals(component, cache.getComponentForTag(tag));
         return this;

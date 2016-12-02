@@ -4,10 +4,13 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.brandongogetap.scoper.Preconditions.checkNotNull;
+import static com.brandongogetap.scoper.ScoperContext.getScoperContext;
 
 /**
  * This is the object that holds a map of your Scopes to Components. This needs to be set up in
@@ -35,11 +38,13 @@ final class ScoperCache {
     private final Logger logger;
 
     private Map<String, Object> componentMap;
+    private Map<String, List<String>> parentChildMap;
     private boolean replaceExisting;
 
     ScoperCache(Logger logger) {
         this.logger = logger;
         componentMap = new LinkedHashMap<>();
+        parentChildMap = new LinkedHashMap<>();
         replaceExisting = false;
     }
 
@@ -53,6 +58,17 @@ final class ScoperCache {
         logger.d("No existing component for scope: '" + scopeName + "'. " +
                 "Returning provided instance.");
         return component;
+    }
+
+    Object initComponent(String parentTag, String childTag, Object component) {
+        if (!parentChildMap.containsKey(parentTag)) {
+            parentChildMap.put(parentTag, new ArrayList<String>());
+        }
+        if (!parentTag.equals(childTag)) {
+            parentChildMap.get(parentTag).add(childTag);
+            logger.d("Adding child scope: '" + childTag + "' to parent scope: " + parentTag);
+        }
+        return initComponent(childTag, component);
     }
 
     @NonNull Object getComponent(Context context) {
@@ -81,17 +97,14 @@ final class ScoperCache {
         if (!componentMap.containsKey(tag)) {
             logger.w("DestroyComponent: No component to destroy for given scope: " + tag + ".");
         }
+        logger.d("Destroying scope: " + tag);
         componentMap.remove(tag);
-    }
 
-    private static ScoperContext getScoperContext(Context context) {
-        //noinspection WrongConstant
-        Object scoperContext = context.getSystemService(ScoperContext.SERVICE_NAME);
-        if (scoperContext instanceof ScoperContext) {
-            return (ScoperContext) scoperContext;
-        } else {
-            throw new IllegalArgumentException("Context does not have ScoperContext linked: " +
-                    context.getClass().getName());
+        List<String> childScopes = parentChildMap.get(tag);
+        if (childScopes != null) {
+            for (String childScope : childScopes) {
+                destroyScope(childScope);
+            }
         }
     }
 

@@ -65,8 +65,8 @@ final class MainActivity extends BaseActivity<MainComponent> {
     }
     
     @Override protected MainComponent initComponent() {
-        return Scoper.getComponentForTag<ApplicationComponent>(MyApplication.SCOPE_TAG)
-                  .plus(new MainModule());
+        return Scoper.<ApplicationComponent>withParent(MyApplication.SCOPE_TAG)
+                  .createChild(this, appComponent -> appComponent.plus(new MainModule()));
     }
 }
 ```
@@ -74,6 +74,8 @@ final class MainActivity extends BaseActivity<MainComponent> {
 This setup should be the same whether you use Fragments/Plain Views/Conductor/etc. for the building blocks of your UI.
 
 How you do the next level of scopes will vary depending on your choice of UI management. Demos are provided to show possible solutions (more on the way).
+
+<strong>**Note:</strong> <em>In the above example we are using the overloaded method for Scoper#withParent that takes in a String for the tag. Normally, you would want to use the overloaded method that takes a Context (ideally all of your downstream Contexts are ScoperContext instances). Overriding #attachBaseContext in an Application subclass can break some libraries, though, so in the case of getting a reference to the Application component, it is recommended to get it via its scope tag.</em>
 
 This is just one potential way to set up the boilerplate for scoping your components. `Scoper` has methods like `cacheComponent(String scopeName)`, `getComponentForTag(String scopeName)`, `destroyScope(String scopeName)` that allow you to manually manage your components without having to implement the `Scoped` interface or use `ScoperContext`.
 

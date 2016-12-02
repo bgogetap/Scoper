@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import butterknife.BindView
+import com.brandongogetap.scoper.ChildBuilder
 import com.brandongogetap.scoper.Scoper
 import com.brandongogetap.scoper.fragmentdemo.R
 import com.brandongogetap.scoper.fragmentdemo.base.BaseFragment
 import com.brandongogetap.scoper.fragmentdemo.home.HomeComponent
 import javax.inject.Inject
 import javax.inject.Named
-
 
 class DetailFragment : BaseFragment<DetailComponent>() {
 
@@ -49,6 +49,7 @@ class DetailFragment : BaseFragment<DetailComponent>() {
     }
 
     override fun initComponent(): DetailComponent {
-        return Scoper.getComponentForName<HomeComponent>(parentScopeName).plus(DetailModule())
+        return Scoper.withParent<HomeComponent>(parentScopeName)
+                .createChild<DetailComponent>(this, ChildBuilder { it.plus(DetailModule()) })
     }
 }

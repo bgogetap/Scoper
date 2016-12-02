@@ -60,6 +60,54 @@ public class ScoperCacheTest {
     }
 
     @Test
+    public void childScopesDestroyedWithParent() {
+        Object component = new Object();
+        Object childComponent = new Object();
+        String parentScope = "test";
+        String childScope = "child";
+        try {
+            robot.initComponent(parentScope, component)
+                    .initChild(parentScope, childScope, childComponent)
+                    .destroyComponent(parentScope)
+                    .getComponent(childScope);
+            fail();
+        } catch (NullPointerException e) {
+            assertEquals("No Component for: " + childScope, e.getMessage());
+        }
+    }
+
+    @Test
+    public void nestedChildScopesDestroyed() {
+        Object component = new Object();
+        Object childComponent = new Object();
+        Object nestedChildComponent = new Object();
+        String parentScope = "test";
+        String childScope = "child";
+        String nestedChild = "nestedChild";
+        try {
+            robot.initComponent(parentScope, component)
+                    .initChild(parentScope, childScope, childComponent)
+                    .initChild(childScope, nestedChild, nestedChildComponent)
+                    .destroyComponent(parentScope)
+                    .getComponent(nestedChild);
+            fail();
+        } catch (NullPointerException e) {
+            assertEquals("No Component for: " + nestedChild, e.getMessage());
+        }
+    }
+
+    @Test
+    public void childComponentAdded() {
+        Object component = new Object();
+        Object childComponent = new Object();
+        String parentScope = "test";
+        String childScope = "child";
+        robot.initComponent(parentScope, component)
+                .initChild(parentScope, childScope, childComponent)
+                .checkComponentEquals(childScope, childComponent);
+    }
+
+    @Test
     public void existingComponentReturnedInsteadOfCached() {
         Object component = new Object();
         Object newComponent = new Object();
@@ -99,7 +147,7 @@ public class ScoperCacheTest {
             fail();
         } catch (IllegalArgumentException e) {
             assertEquals(
-                    "Context does not have ScoperContext linked: " + context.getClass().getName(),
+                    "Context is not instance of ScoperContext: " + context.getClass().getName(),
                     e.getMessage());
         }
     }

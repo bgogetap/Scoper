@@ -38,4 +38,15 @@ public final class ScoperContext extends ContextWrapper {
         }
         return super.getSystemService(name);
     }
+
+    static ScoperContext getScoperContext(Context context) {
+        //noinspection WrongConstant
+        Object scoperContext = context.getSystemService(ScoperContext.SERVICE_NAME);
+        if (scoperContext instanceof ScoperContext) {
+            return (ScoperContext) scoperContext;
+        } else {
+            throw new IllegalArgumentException("Context is not instance of ScoperContext: " +
+                    context.getClass().getName());
+        }
+    }
 }

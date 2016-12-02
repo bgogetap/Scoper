@@ -13,33 +13,21 @@ task sourcesJar(type: Jar) {
     classifier = 'sources'
     from android.sourceSets.main.java.srcDirs
 }
-//
-//task javadoc(type: Javadoc) {
-//    source = android.sourceSets.main.java.srcDirs
-//    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-//}
-//
-//task javadocJar(type: Jar, dependsOn: javadoc) {
-//    classifier = 'javadoc'
-//    from javadoc.destinationDir
-//    options.encoding = 'UTF-8'
-//}
 
 artifacts {
     archives sourcesJar
-//    archives javadocJar
 }
 
 group = PROJECT_GROUP_ID
 version = PROJECT_VERSION
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -52,6 +40,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    lintOptions {
+        textReport true
+        textOutput 'stdout'
+    }
+}
+
+configurations {
+    lintChecks
 }
 
 dependencies {
@@ -65,6 +62,20 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
+    lintChecks project(path: ':scoper-lint', configuration: 'lintChecks')
+}
+
+task copyLintJar(type: Copy) {
+    from(configurations.lintChecks) {
+        rename { 'lint.jar' }
+    }
+    into 'build/intermediates/lint/'
+}
+
+project.afterEvaluate {
+    def compileLintTask = project.tasks.find { it.name == 'compileLint' }
+    compileLintTask.dependsOn(copyLintJar)
 }
 
 install {

@@ -3,7 +3,8 @@ package com.brandongogetap.scoper;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-@SuppressWarnings("WrongConstant") public final class Scoper {
+@SuppressWarnings("WrongConstant")
+public final class Scoper {
 
     private Scoper() {
 
@@ -41,11 +42,39 @@ import android.support.annotation.NonNull;
     }
 
     /**
+     * Returns a new {@link ScopeBuilder} instance which will allow you to create a child scope on
+     * top of an existing scope.
+     * <p>
+     * This should be followed by a call to {@link ScopeBuilder#createChild(Scoped, ChildBuilder)}
+     *
+     * @param parentContext Context of the parent scope
+     * @param <T>           Type of the parent scope's Component
+     * @return new {@link ScopeBuilder} instance
+     */
+    public static <T> ScopeBuilder<T> withParent(Context parentContext) {
+        return ScopeBuilder.start(parentContext);
+    }
+
+    /**
+     * Returns a new {@link ScopeBuilder} instance which will allow you to create a child scope on
+     * top of an existing scope.
+     * <p>
+     * This should be followed by a call to {@link ScopeBuilder#createChild(Scoped, ChildBuilder)}
+     *
+     * @param parentScopeTag Scope name (tag) of the parent scope
+     * @param <T>            Type of the parent scope's Component
+     * @return new {@link ScopeBuilder} instance
+     */
+    public static <T> ScopeBuilder<T> withParent(String parentScopeTag) {
+        return ScopeBuilder.start(parentScopeTag);
+    }
+
+    /**
      * Get the component for a given context. This will throw a {@link NullPointerException} if
      * there is no component for the given context, and so is guaranteed to be non-null.
      * <p>
-     * This is usually used to retrieve another scope's component to use in building a subcomponent
-     * for the current scope.
+     * This should <strong>not</strong> be used to retrieve a parent component for building a child scope. You should
+     * instead use {@link Scoper#withParent(Context)}.
      * <p>
      * Throws {@link IllegalArgumentException} if Context is not linked to {@link ScoperContext}
      *
@@ -63,8 +92,8 @@ import android.support.annotation.NonNull;
      * Get the component for a given tag. This will throw a {@link NullPointerException} if there
      * is not component for the given tag, and so is guaranteed to be non-null.
      * <p>
-     * This is convenient to use when building nested scopes and you do not have access to the
-     * desired component's scoped context, or if you are manually managing scope caching yourself.
+     * This should <strong>not</strong> be used to retrieve a parent component for building a child scope. You should
+     * instead use {@link Scoper#withParent(String)}.
      *
      * @param scopeName The scope name tag
      * @param <T>       The component type
@@ -118,6 +147,10 @@ import android.support.annotation.NonNull;
         CacheHandler.INSTANCE.loggingEnabled(enabled);
     }
 
+    static <T> T createChild(String parentScopeTag, Scoped<?> scoped, T child) {
+        return CacheHandler.INSTANCE.createChild(parentScopeTag, scoped, child);
+    }
+
     @SuppressWarnings("unchecked")
     private enum CacheHandler {
         INSTANCE;
@@ -127,6 +160,10 @@ import android.support.annotation.NonNull;
 
         <T> T createComponent(Scoped<?> scoped, Object component) {
             return (T) cache.initComponent(scoped.getScopeName(), component);
+        }
+
+        <T> T createChild(String parentScopeTag, Scoped<?> scoped, Object component) {
+            return (T) cache.initComponent(parentScopeTag, scoped.getScopeName(), component);
         }
 
         <T> T getComponent(Context context) {
