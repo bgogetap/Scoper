@@ -108,6 +108,19 @@ public class ScoperCacheTest {
     }
 
     @Test
+    public void childComponentReturnsExisting() {
+        Object component = new Object();
+        Object childComponent = new Object();
+        Object newChildComponent = new Object();
+        String parentScope = "test";
+        String childScope = "child";
+        robot.initComponent(parentScope, component)
+                .initChild(parentScope, childScope, childComponent)
+                .initChild(parentScope, childScope, newChildComponent)
+                .checkComponentEquals(childScope, childComponent);
+    }
+
+    @Test
     public void existingComponentReturnedInsteadOfCached() {
         Object component = new Object();
         Object newComponent = new Object();

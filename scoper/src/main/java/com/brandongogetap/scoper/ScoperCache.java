@@ -4,41 +4,20 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.brandongogetap.scoper.Preconditions.checkNotNull;
 import static com.brandongogetap.scoper.ScoperContext.getScoperContext;
 
-/**
- * This is the object that holds a map of your Scopes to Components. This needs to be set up in
- * your Application subclass.
- * <p>
- * You can either instantiate a new instance in your Application class or Provide it with a
- * Dependency Injection framework.
- * <p>
- * <pre>
- *     {@code
- *
- *     @literal @Inject ScoperCache componentCache;
- *
- *     @Override public Object getSystemService(String name) {
- *         if (name.equals(ScoperCache.SERVICE_NAME)) {
- *           return componentCache;
- *         }
- *         return super.getSystemService(name);
- *      }
- *     }
- * </pre>
- */
 final class ScoperCache {
 
     private final Logger logger;
 
     private Map<String, Object> componentMap;
-    private Map<String, List<String>> parentChildMap;
+    private Map<String, Set<String>> parentChildMap;
     private boolean replaceExisting;
 
     ScoperCache(Logger logger) {
@@ -62,11 +41,15 @@ final class ScoperCache {
 
     Object initComponent(String parentTag, String childTag, Object component) {
         if (!parentChildMap.containsKey(parentTag)) {
-            parentChildMap.put(parentTag, new ArrayList<String>());
+            parentChildMap.put(parentTag, new HashSet<String>());
         }
         if (!parentTag.equals(childTag)) {
-            parentChildMap.get(parentTag).add(childTag);
-            logger.d("Adding child scope: '" + childTag + "' to parent scope: " + parentTag);
+            if (!parentChildMap.get(parentTag).contains(childTag)) {
+                logger.d("Adding child scope: '" + childTag + "' to parent scope: " + parentTag);
+            }
+            synchronized (this) {
+                parentChildMap.get(parentTag).add(childTag);
+            }
         }
         return initComponent(childTag, component);
     }
@@ -99,11 +82,31 @@ final class ScoperCache {
         }
         logger.d("Destroying scope: " + tag);
         componentMap.remove(tag);
+        removeChildScopeFromParentMap(tag);
 
-        List<String> childScopes = parentChildMap.get(tag);
-        if (childScopes != null) {
-            for (String childScope : childScopes) {
+        Set<String> childScopes = parentChildMap.get(tag);
+        if (childScopes != null && childScopes.size() > 0) {
+            Set<String> iterableSet = new HashSet<>(childScopes);
+            logger.d("------ Destroying child scopes of: " + tag + " ------");
+            for (String childScope : iterableSet) {
                 destroyScope(childScope);
+            }
+            parentChildMap.remove(tag);
+            logger.d("------ Finished destroying child scopes of: " + tag + " ------");
+        }
+    }
+
+    private void removeChildScopeFromParentMap(String tag) {
+        for (String parent : parentChildMap.keySet()) {
+            if (parentChildMap.get(parent) != null && parentChildMap.get(parent).size() > 0) {
+                Set<String> iterableSet = new HashSet<>(parentChildMap.get(parent));
+                for (String childScope : iterableSet) {
+                    if (childScope.equals(tag)) {
+                        synchronized (this) {
+                            parentChildMap.get(parent).remove(childScope);
+                        }
+                    }
+                }
             }
         }
     }
