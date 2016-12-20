@@ -130,12 +130,31 @@ public final class Scoper {
     }
 
     /**
-     * Removes the component for the given Scope tag
+     * Removes the component for the given Scope name
      *
      * @param scopeName The scope to be destroyed
      */
     public static void destroyScope(String scopeName) {
         CacheHandler.INSTANCE.destroyScope(scopeName);
+    }
+
+    /**
+     * Retrieve the scope name for a given Context
+     * @param context Context associated with desired scope name
+     * @return Scope name
+     */
+    public static String extractScope(Context context) {
+        return ((ScoperContext) context).getTag();
+    }
+
+    /**
+     * Create a Context associated with the given Scope name
+     * @param parentContext Base context
+     * @param scopeName Scope name to associate with Context
+     * @return Scoped Context
+     */
+    public static Context createContext(Context parentContext, String scopeName) {
+        return new ScoperContext(parentContext, scopeName);
     }
 
     /**
