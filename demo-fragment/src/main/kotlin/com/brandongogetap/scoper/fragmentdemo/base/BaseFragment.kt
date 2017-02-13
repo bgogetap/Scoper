@@ -10,7 +10,7 @@ import com.brandongogetap.scoper.Scoped
 import com.brandongogetap.scoper.Scoper
 import com.brandongogetap.scoper.ScoperContext
 
-abstract class BaseFragment<T> : Fragment(), Scoped<T> {
+abstract class BaseFragment<T> : Fragment(), Scoped {
 
     private lateinit var unbinder: Unbinder
 

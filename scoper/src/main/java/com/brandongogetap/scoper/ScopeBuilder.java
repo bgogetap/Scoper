@@ -26,7 +26,7 @@ public final class ScopeBuilder<T> {
         return new ScopeBuilder<>(parentScopeTag);
     }
 
-    public <C> C createChild(Scoped<?> scoped, ChildBuilder<T> childBuilder) {
+    public <C> C createChild(Scoped scoped, ChildBuilder<T> childBuilder) {
         Preconditions.checkNotNull(parentScope, "Cannot create child without calling Scoper#withParent first");
         C child = (C) childBuilder.build(parentScope);
         return Scoper.createChild(parentScopeTag, scoped, child);

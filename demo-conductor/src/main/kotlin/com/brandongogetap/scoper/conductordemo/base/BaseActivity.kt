@@ -11,7 +11,7 @@ import com.brandongogetap.scoper.Scoped
 import com.brandongogetap.scoper.Scoper
 import com.brandongogetap.scoper.ScoperContext
 
-abstract class BaseActivity<T> : AppCompatActivity(), Scoped<T>, ControllerChangeHandler.ControllerChangeListener {
+abstract class BaseActivity<T> : AppCompatActivity(), Scoped, ControllerChangeHandler.ControllerChangeListener {
 
     protected var component: T? = null
 

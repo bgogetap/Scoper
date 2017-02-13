@@ -11,7 +11,7 @@ import com.brandongogetap.scoper.Scoped
 import com.brandongogetap.scoper.Scoper
 import com.brandongogetap.scoper.ScoperContext
 
-abstract class BaseController<T> : Controller(), Scoped<T> {
+abstract class BaseController<T> : Controller(), Scoped {
 
     protected var component: T? = null
 

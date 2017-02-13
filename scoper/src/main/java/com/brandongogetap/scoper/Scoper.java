@@ -37,7 +37,7 @@ public final class Scoper {
      * @param <T>       The component type
      * @return The provided component
      */
-    public static <T> T createComponent(Scoped<?> scoped, Object component) {
+    public static <T> T createComponent(Scoped scoped, Object component) {
         return CacheHandler.INSTANCE.createComponent(scoped, component);
     }
 
@@ -125,7 +125,7 @@ public final class Scoper {
      *
      * @param scoped The {@link Scoped} object associated with the scope to be destroyed
      */
-    public static void destroyScope(Scoped<?> scoped) {
+    public static void destroyScope(Scoped scoped) {
         CacheHandler.INSTANCE.destroyScope(scoped.getScopeName());
     }
 
@@ -166,7 +166,7 @@ public final class Scoper {
         CacheHandler.INSTANCE.loggingEnabled(enabled);
     }
 
-    static <T> T createChild(String parentScopeTag, Scoped<?> scoped, T child) {
+    static <T> T createChild(String parentScopeTag, Scoped scoped, T child) {
         return CacheHandler.INSTANCE.createChild(parentScopeTag, scoped, child);
     }
 
@@ -177,11 +177,11 @@ public final class Scoper {
         private Logger logger = new Logger();
         private ScoperCache cache = new ScoperCache(logger);
 
-        <T> T createComponent(Scoped<?> scoped, Object component) {
+        <T> T createComponent(Scoped scoped, Object component) {
             return (T) cache.initComponent(scoped.getScopeName(), component);
         }
 
-        <T> T createChild(String parentScopeTag, Scoped<?> scoped, Object component) {
+        <T> T createChild(String parentScopeTag, Scoped scoped, Object component) {
             return (T) cache.initComponent(parentScopeTag, scoped.getScopeName(), component);
         }
 
